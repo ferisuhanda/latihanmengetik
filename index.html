@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Latihan Mengetik :DQ4</title>
+    <title>Aplikasi Latihan Mengetik</title>
     <style>
         :root {
             --bg: #1e1e2e;
@@ -47,7 +47,6 @@
 
         h1 { color: var(--accent); margin: 0 0 15px 0; font-size: 1.8em; }
 
-        /* ===== REGISTRASI ===== */
         .register-box {
             background: var(--bg);
             padding: 15px;
@@ -238,7 +237,6 @@
             box-shadow: 0 0 15px var(--key-space);
         }
 
-        /* ===== NOTIFIKASI ===== */
         #notification-area {
             position: fixed;
             top: 20px;
@@ -285,13 +283,11 @@
 </head>
 <body>
 
-<!-- AREA NOTIFIKASI -->
 <div id="notification-area"></div>
 
 <div class="container">
-    <h1>⌨️ Latihan Mengetik : DQ4</h1>
+    <h1>⌨️ Latihan Mengetik</h1>
 
-    <!-- REGISTRASI NAMA -->
     <div class="register-box" id="register-box">
         <input type="text" id="name-input" placeholder="Masukkan nama Anda..." maxlength="30">
         <button id="register-btn">Daftar</button>
@@ -425,10 +421,25 @@
 
     /* ============ KONFIGURASI LEVEL ============ */
     const LEVEL_CONFIG = {
-        easy:   { duration: 10, caption: "Anda perlu menghafal huruf dan angka keyboard, es tea kleon" },
-        medium: { duration: 20, caption: "Anda perlu konsentrasi, tanpa melihat keyboard, beli ayam geprek RCTI" },
-        hard:   { duration: 35, caption: "Anda perlu konsentrasi, dengan 10 jari dan beli es teler mang jali" }
+        easy:   { duration: 10 },
+        medium: { duration: 20 },
+        hard:   { duration: 35 }
     };
+
+    /* ============ CAPTION BERDASARKAN AKURASI ============ */
+    function getCaptionByAccuracy(acc) {
+        if (acc >= 90) {
+            return "Congratulations!, Try to make your results even better";
+        } else if (acc >= 80) {
+            return "Luar biasa ... tingkatkan kembali, anda perlu mengonsumsi makanan sehat";
+        } else if (acc >= 70) {
+            return "Luar biasa ... tingkatkan kembali, jangan memikirkan nasi goreng terus";
+        } else if (acc >= 50) {
+            return "Hayo ... coba lagi ... tingkatkan kembali, jangan males";
+        } else {
+            return "Anda sedang menikmati game ini ... semangat";
+        }
+    }
 
     /* ============ ELEMEN DOM ============ */
     const timerElement = document.getElementById('timer');
@@ -466,13 +477,12 @@
         setTimeout(() => notif.remove(), 6000);
     }
 
-    // Notifikasi saat situs pertama kali dibuka
     window.addEventListener('load', () => {
         setTimeout(() => {
             showNotification("Seseorang baru saja membuka situs ini! 👋", "🌐");
         }, 500);
         setTimeout(() => {
-            const randomUser = ["Wawan", "Sri", "Arjuna", "Dewi", "Eka", "Firman", "Milda"];
+            const randomUser = ["Andi", "Budi", "Citra", "Dewi", "Eka", "Fajar", "Gita"];
             const pick = randomUser[Math.floor(Math.random() * randomUser.length)];
             showNotification(`${pick} sedang online di situs ini!`, "🟢");
         }, 3000);
@@ -590,8 +600,7 @@
 
         const finalWPM = calculateWPM();
         const finalAcc = calculateAccuracy();
-        const level = difficultySelect.value;
-        const caption = LEVEL_CONFIG[level].caption;
+        const caption = getCaptionByAccuracy(finalAcc);
 
         if (isCancelled) {
             timeLeft = 0;
