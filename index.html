@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Latihan Mengetik :DQ4</title>
+    <style>
+        :root {
+            --bg: #1e1e2e;
+            --panel: #313244;
+            --text: #cdd6f4;
+            --accent: #89b4fa;
+            --correct: #a6e3a1;
+            --incorrect: #f38ba8;
+            --key-bg: #45475a;
+            --key-text: #cdd6f4;
+            --cancel: #f38ba8;
+            --key-letter: #89b4fa;
+            --key-number: #a6e3a1;
+            --key-special: #cba6f7;
+            --key-space: #fab387;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: var(--panel);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 850px;
+            text-align: center;
+        }
+
+        h1 { color: var(--accent); margin: 0 0 15px 0; font-size: 1.8em; }
+
+        /* ===== REGISTRASI ===== */
+        .register-box {
+            background: var(--bg);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .register-box input {
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid #585b70;
+            background: var(--panel);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 1em;
+            outline: none;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .register-box input:focus { border-color: var(--accent); }
+
+        .register-box button {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            background: var(--accent);
+            color: var(--bg);
+            font-weight: bold;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .register-box button:hover { background: #b4befe; }
+
+        #greeting {
+            color: var(--correct);
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .controls select, .controls button {
+            padding: 8px 15px;
+            font-size: 1em;
+            font-family: inherit;
+            border-radius: 8px;
+            border: 2px solid #585b70;
+            background-color: var(--bg);
+            color: var(--text);
+            cursor: pointer;
+            outline: none;
+        }
+
+        .controls select:hover, .controls button:hover { border-color: var(--accent); }
+
+        .controls button.main-btn {
+            background-color: var(--accent);
+            color: var(--bg);
+            font-weight: bold;
+            border: none;
+            padding: 10px 25px;
+        }
+
+        .controls button.main-btn:hover { background-color: #b4befe; }
+        .controls button.main-btn:disabled { background-color: #585b70; cursor: not-allowed; }
+
+        .controls button.cancel-btn {
+            background-color: var(--cancel);
+            color: var(--bg);
+            font-weight: bold;
+            border: none;
+            padding: 10px 25px;
+        }
+
+        .controls button.cancel-btn:hover { background-color: #f5a9bd; }
+        .controls button.cancel-btn:disabled { background-color: #585b70; cursor: not-allowed; opacity: 0.5; }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            font-weight: bold;
+            background: var(--bg);
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        #timer { color: var(--incorrect); }
+        #wpm { color: var(--correct); }
+        #accuracy { color: #f9e2af; }
+
+        #text-display {
+            background-color: var(--bg);
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.3em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            text-align: left;
+            min-height: 90px;
+            user-select: none;
+        }
+
+        #text-display span { transition: all 0.1s ease; }
+        .correct { color: var(--correct); }
+        .incorrect { color: var(--incorrect); text-decoration: underline; }
+        .current { background-color: #45475a; border-radius: 3px; }
+
+        #input-field {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1em;
+            font-family: inherit;
+            border: 2px solid #585b70;
+            border-radius: 10px;
+            background-color: var(--bg);
+            color: var(--text);
+            outline: none;
+        }
+
+        #input-field:focus { border-color: var(--accent); }
+        #input-field:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .keyboard {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .keyboard-row {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+        }
+
+        .key {
+            width: 42px;
+            height: 42px;
+            background-color: var(--key-bg);
+            color: var(--key-text);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9em;
+            transition: background-color 0.1s, transform 0.1s, box-shadow 0.1s;
+            border-bottom: 3px solid #2a2a3a;
+        }
+
+        .key.wide { width: 65px; }
+        .key.space { width: 250px; }
+
+        .key[data-cat="letter"].active {
+            background-color: var(--key-letter); color: var(--bg);
+            transform: translateY(2px); border-bottom-width: 1px;
+            box-shadow: 0 0 15px var(--key-letter);
+        }
+        .key[data-cat="number"].active {
+            background-color: var(--key-number); color: var(--bg);
+            transform: translateY(2px); border-bottom-width: 1px;
+            box-shadow: 0 0 15px var(--key-number);
+        }
+        .key[data-cat="special"].active {
+            background-color: var(--key-special); color: var(--bg);
+            transform: translateY(2px); border-bottom-width: 1px;
+            box-shadow: 0 0 15px var(--key-special);
+        }
+        .key[data-cat="space"].active {
+            background-color: var(--key-space); color: var(--bg);
+            transform: translateY(2px); border-bottom-width: 1px;
+            box-shadow: 0 0 15px var(--key-space);
+        }
+
+        /* ===== NOTIFIKASI ===== */
+        #notification-area {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 320px;
+        }
+
+        .notif {
+            background: linear-gradient(135deg, #89b4fa, #cba6f7);
+            color: #1e1e2e;
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-weight: bold;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+            animation: slideIn 0.5s ease, fadeOut 0.5s ease 5s forwards;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notif .icon { font-size: 1.5em; }
+
+        @keyframes slideIn {
+            from { transform: translateX(120%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            to { transform: translateX(120%); opacity: 0; }
+        }
+
+        @media (max-width: 600px) {
+            .key { width: 30px; height: 38px; font-size: 0.75em; }
+            .key.wide { width: 45px; }
+            .key.space { width: 180px; }
+            #text-display { font-size: 1.1em; }
+            #notification-area { top: 10px; right: 10px; left: 10px; max-width: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- AREA NOTIFIKASI -->
+<div id="notification-area"></div>
+
+<div class="container">
+    <h1>⌨️ Latihan Mengetik : DQ4</h1>
+
+    <!-- REGISTRASI NAMA -->
+    <div class="register-box" id="register-box">
+        <input type="text" id="name-input" placeholder="Masukkan nama Anda..." maxlength="30">
+        <button id="register-btn">Daftar</button>
+    </div>
+
+    <div id="greeting">Halo, <span id="user-name"></span>! Selamat berlatih 🎉</div>
+
+    <div class="controls">
+        <select id="difficulty">
+            <option value="easy" selected>Mudah (10s)</option>
+            <option value="medium">Sedang (20s)</option>
+            <option value="hard">Sulit (35s)</option>
+        </select>
+        <button id="start-btn" class="main-btn" disabled>Mulai Latihan</button>
+        <button id="cancel-btn" class="cancel-btn" disabled>Batalkan</button>
+    </div>
+
+    <div class="stats">
+        <div>⏱ Waktu: <span id="timer">10</span>s</div>
+        <div>⚡ WPM: <span id="wpm">0</span></div>
+        <div>🎯 Akurasi: <span id="accuracy">100</span>%</div>
+    </div>
+
+    <div id="text-display"></div>
+
+    <input type="text" id="input-field" placeholder="Daftarkan nama terlebih dahulu..." disabled autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+
+    <div class="keyboard" id="keyboard">
+        <div class="keyboard-row">
+            <div class="key" data-key="`" data-cat="special">`</div>
+            <div class="key" data-key="1" data-cat="number">1</div>
+            <div class="key" data-key="2" data-cat="number">2</div>
+            <div class="key" data-key="3" data-cat="number">3</div>
+            <div class="key" data-key="4" data-cat="number">4</div>
+            <div class="key" data-key="5" data-cat="number">5</div>
+            <div class="key" data-key="6" data-cat="number">6</div>
+            <div class="key" data-key="7" data-cat="number">7</div>
+            <div class="key" data-key="8" data-cat="number">8</div>
+            <div class="key" data-key="9" data-cat="number">9</div>
+            <div class="key" data-key="0" data-cat="number">0</div>
+            <div class="key" data-key="-" data-cat="special">-</div>
+            <div class="key" data-key="=" data-cat="special">=</div>
+        </div>
+        <div class="keyboard-row">
+            <div class="key wide" data-key="Tab" data-cat="special">Tab</div>
+            <div class="key" data-key="q" data-cat="letter">Q</div>
+            <div class="key" data-key="w" data-cat="letter">W</div>
+            <div class="key" data-key="e" data-cat="letter">E</div>
+            <div class="key" data-key="r" data-cat="letter">R</div>
+            <div class="key" data-key="t" data-cat="letter">T</div>
+            <div class="key" data-key="y" data-cat="letter">Y</div>
+            <div class="key" data-key="u" data-cat="letter">U</div>
+            <div class="key" data-key="i" data-cat="letter">I</div>
+            <div class="key" data-key="o" data-cat="letter">O</div>
+            <div class="key" data-key="p" data-cat="letter">P</div>
+            <div class="key" data-key="[" data-cat="special">[</div>
+            <div class="key" data-key="]" data-cat="special">]</div>
+        </div>
+        <div class="keyboard-row">
+            <div class="key wide" data-key="CapsLock" data-cat="special">Caps</div>
+            <div class="key" data-key="a" data-cat="letter">A</div>
+            <div class="key" data-key="s" data-cat="letter">S</div>
+            <div class="key" data-key="d" data-cat="letter">D</div>
+            <div class="key" data-key="f" data-cat="letter">F</div>
+            <div class="key" data-key="g" data-cat="letter">G</div>
+            <div class="key" data-key="h" data-cat="letter">H</div>
+            <div class="key" data-key="j" data-cat="letter">J</div>
+            <div class="key" data-key="k" data-cat="letter">K</div>
+            <div class="key" data-key="l" data-cat="letter">L</div>
+            <div class="key" data-key=";" data-cat="special">;</div>
+            <div class="key" data-key="'" data-cat="special">'</div>
+        </div>
+        <div class="keyboard-row">
+            <div class="key wide" data-key="Shift" data-cat="special">Shift</div>
+            <div class="key" data-key="z" data-cat="letter">Z</div>
+            <div class="key" data-key="x" data-cat="letter">X</div>
+            <div class="key" data-key="c" data-cat="letter">C</div>
+            <div class="key" data-key="v" data-cat="letter">V</div>
+            <div class="key" data-key="b" data-cat="letter">B</div>
+            <div class="key" data-key="n" data-cat="letter">N</div>
+            <div class="key" data-key="m" data-cat="letter">M</div>
+            <div class="key" data-key="," data-cat="special">,</div>
+            <div class="key" data-key="." data-cat="special">.</div>
+            <div class="key" data-key="/" data-cat="special">/</div>
+            <div class="key wide" data-key="Shift" data-cat="special">Shift</div>
+        </div>
+        <div class="keyboard-row">
+            <div class="key space" data-key=" " data-cat="space">Space</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    /* ============ DATABASE TEKS ============ */
+    const textDatabase = {
+        easy: [
+            "I read a book.",
+            "She goes to school.",
+            "The cat is sleeping.",
+            "We eat rice every day.",
+            "He plays football.",
+            "They are happy.",
+            "My mother cooks food.",
+            "The sun is bright.",
+            "Birds can fly high.",
+            "I love my family."
+        ],
+        medium: [
+            "Pemrograman adalah seni memberitahu komputer apa yang harus dilakukan.",
+            "Latihan membuat sempurna, jadi teruslah mengetik setiap hari.",
+            "Kucing berlari cepat mengejar tikus di halaman belakang rumah.",
+            "Teknologi terus berkembang pesat seiring berjalannya waktu.",
+            "Belajar bahasa baru membuka pintu menuju dunia yang lebih luas.",
+            "Kesuksesan tidak datang secara instan, tetapi melalui proses panjang.",
+            "Membaca buku setiap hari dapat meningkatkan wawasan dan pengetahuan.",
+            "Kesehatan adalah investasi terbaik yang bisa kita lakukan sekarang.",
+            "Kerja keras dan doa adalah kombinasi sempurna untuk meraih impian."
+        ],
+        hard: [
+            "Konfigurasi infrastruktur teknologi informasi memerlukan pemahaman mendalam mengenai arsitektur jaringan, keamanan siber, serta optimalisasi performa server agar sistem dapat beroperasi secara efisien dan berkelanjutan.",
+            "Pengembangan aplikasi berbasis kecerdasan buatan tidak hanya menuntut kemampuan pemrograman yang mumpuni, tetapi juga pemahaman statistik, aljabar linear, dan etika dalam pengambilan keputusan otomatis oleh mesin.",
+            "Revolusi industri keempat telah mengubah lanskap ekonomi global secara fundamental, mendorong otomatisasi, digitalisasi, dan integrasi sistem fisik-cyber yang menuntut adaptasi cepat dari seluruh lapisan masyarakat.",
+            "Dalam ekosistem digital yang semakin kompleks, kolaborasi lintas disiplin ilmu menjadi kunci utama untuk menghasilkan inovasi yang berdampak nyata bagi kehidupan manusia dan kelestarian lingkungan.",
+            "Transformasi digital di sektor pemerintahan menuntut integrasi data antar instansi, interoperabilitas sistem, serta tata kelola informasi yang transparan dan akuntabel demi terwujudnya pelayanan publik yang prima.",
+            "Keamanan siber menjadi prioritas utama dalam pengembangan arsitektur cloud modern, mencakup enkripsi menyeluruh, manajemen identitas terpusat, serta deteksi anomali berbasis kecerdasan buatan.",
+            "Implementasi internet of things pada industri manufaktur memerlukan sinkronisasi perangkat sensor, jaringan komunikasi latensi rendah, serta analitik prediktif untuk meminimalkan waktu henti produksi.",
+            "Pengelolaan big data dalam organisasi modern menuntut kompetensi analisis statistik, pemodelan prediktif, visualisasi data interaktif, serta kepatuhan terhadap regulasi perlindungan privasi pengguna.",
+            "Paradigma pembelajaran mesin terus berevolusi dari supervised learning menuju reinforcement learning, membuka peluang inovasi pada robotika otonom, kendaraan pintar, dan sistem rekomendasi adaptif."
+        ]
+    };
+
+    /* ============ KONFIGURASI LEVEL ============ */
+    const LEVEL_CONFIG = {
+        easy:   { duration: 10, caption: "Anda perlu menghafal huruf dan angka keyboard, es tea kleon" },
+        medium: { duration: 20, caption: "Anda perlu konsentrasi, tanpa melihat keyboard, beli ayam geprek RCTI" },
+        hard:   { duration: 35, caption: "Anda perlu konsentrasi, dengan 10 jari dan beli es teler mang jali" }
+    };
+
+    /* ============ ELEMEN DOM ============ */
+    const timerElement = document.getElementById('timer');
+    const wpmElement = document.getElementById('wpm');
+    const accuracyElement = document.getElementById('accuracy');
+    const textDisplay = document.getElementById('text-display');
+    const inputField = document.getElementById('input-field');
+    const startBtn = document.getElementById('start-btn');
+    const cancelBtn = document.getElementById('cancel-btn');
+    const difficultySelect = document.getElementById('difficulty');
+    const keys = document.querySelectorAll('.key');
+    const nameInput = document.getElementById('name-input');
+    const registerBtn = document.getElementById('register-btn');
+    const registerBox = document.getElementById('register-box');
+    const greeting = document.getElementById('greeting');
+    const userNameSpan = document.getElementById('user-name');
+    const notifArea = document.getElementById('notification-area');
+
+    /* ============ STATE ============ */
+    let duration = LEVEL_CONFIG.easy.duration;
+    let timeLeft = duration;
+    let timerInterval;
+    let isPlaying = false;
+    let currentText = "";
+    let totalCharsTyped = 0;
+    let correctChars = 0;
+    let userName = "";
+
+    /* ============ NOTIFIKASI ============ */
+    function showNotification(message, icon = "🔔") {
+        const notif = document.createElement('div');
+        notif.className = 'notif';
+        notif.innerHTML = `<span class="icon">${icon}</span><span>${message}</span>`;
+        notifArea.appendChild(notif);
+        setTimeout(() => notif.remove(), 6000);
+    }
+
+    // Notifikasi saat situs pertama kali dibuka
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            showNotification("Seseorang baru saja membuka situs ini! 👋", "🌐");
+        }, 500);
+        setTimeout(() => {
+            const randomUser = ["Wawan", "Sri", "Arjuna", "Dewi", "Eka", "Firman", "Milda"];
+            const pick = randomUser[Math.floor(Math.random() * randomUser.length)];
+            showNotification(`${pick} sedang online di situs ini!`, "🟢");
+        }, 3000);
+    });
+
+    /* ============ REGISTRASI ============ */
+    function registerUser() {
+        const name = nameInput.value.trim();
+        if (name === "") {
+            showNotification("Nama tidak boleh kosong!", "⚠️");
+            return;
+        }
+        userName = name;
+        userNameSpan.innerText = userName;
+        greeting.style.display = "block";
+        registerBox.style.display = "none";
+        startBtn.disabled = false;
+        inputField.placeholder = "Klik 'Mulai Latihan' untuk memulai...";
+        showNotification(`Selamat datang, ${userName}! 🎉`, "✅");
+    }
+
+    registerBtn.addEventListener('click', registerUser);
+    nameInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') registerUser();
+    });
+
+    /* ============ UPDATE DURASI ============ */
+    function updateDurationFromLevel() {
+        const level = difficultySelect.value;
+        duration = LEVEL_CONFIG[level].duration;
+        timeLeft = duration;
+        timerElement.innerText = timeLeft;
+        startBtn.innerText = `Mulai Latihan (${duration}s)`;
+    }
+
+    difficultySelect.addEventListener('change', () => {
+        if (isPlaying) return;
+        updateDurationFromLevel();
+    });
+
+    /* ============ FUNGSI UTAMA ============ */
+    function loadRandomText() {
+        const level = difficultySelect.value;
+        const pool = textDatabase[level];
+        currentText = pool[Math.floor(Math.random() * pool.length)];
+        renderText("");
+        inputField.value = "";
+        totalCharsTyped = 0;
+        correctChars = 0;
+        accuracyElement.innerText = "100";
+    }
+
+    function renderText(input) {
+        textDisplay.innerHTML = "";
+        const inputChars = input.split('');
+        currentText.split('').forEach((char, index) => {
+            const span = document.createElement('span');
+            span.innerText = char;
+            if (index < inputChars.length) {
+                if (inputChars[index] === char) span.classList.add('correct');
+                else span.classList.add('incorrect');
+            } else if (index === inputChars.length) {
+                span.classList.add('current');
+            }
+            textDisplay.appendChild(span);
+        });
+    }
+
+    function calculateWPM() {
+        const timeElapsed = duration - timeLeft;
+        if (timeElapsed === 0) return 0;
+        return Math.round((totalCharsTyped / 5) / (timeElapsed / 60));
+    }
+
+    function calculateAccuracy() {
+        if (totalCharsTyped === 0) return 100;
+        return Math.round((correctChars / totalCharsTyped) * 100);
+    }
+
+    function startGame() {
+        if (!userName) {
+            showNotification("Silakan daftarkan nama terlebih dahulu!", "⚠️");
+            return;
+        }
+        updateDurationFromLevel();
+        isPlaying = true;
+        timeLeft = duration;
+        timerElement.innerText = timeLeft;
+        wpmElement.innerText = 0;
+        accuracyElement.innerText = 100;
+        inputField.disabled = false;
+        inputField.value = "";
+        inputField.focus();
+        startBtn.disabled = true;
+        cancelBtn.disabled = false;
+        startBtn.innerText = "Berjalan...";
+        difficultySelect.disabled = true;
+
+        loadRandomText();
+
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            timerElement.innerText = timeLeft;
+            if (timeLeft <= 0) endGame(false);
+        }, 1000);
+    }
+
+    function endGame(isCancelled) {
+        clearInterval(timerInterval);
+        isPlaying = false;
+        inputField.disabled = true;
+        startBtn.disabled = false;
+        cancelBtn.disabled = true;
+        difficultySelect.disabled = false;
+
+        const finalWPM = calculateWPM();
+        const finalAcc = calculateAccuracy();
+        const level = difficultySelect.value;
+        const caption = LEVEL_CONFIG[level].caption;
+
+        if (isCancelled) {
+            timeLeft = 0;
+            timerElement.innerText = "0";
+            alert(`❌ Latihan Dibatalkan, ${userName}!\n\n⚡ Kecepatan: ${finalWPM} WPM\n🎯 Akurasi: ${finalAcc}%`);
+            showNotification(`Latihan dibatalkan oleh ${userName}`, "❌");
+        } else {
+            timeLeft = 0;
+            timerElement.innerText = "0";
+            alert(`⏰ Waktu Habis, ${userName}!\n\n⚡ Kecepatan: ${finalWPM} WPM\n🎯 Akurasi: ${finalAcc}%\n\n📝 Catatan:\n${caption}`);
+            showNotification(`Selesai! ${finalWPM} WPM | ${finalAcc}% akurasi`, "🏁");
+        }
+
+        updateDurationFromLevel();
+    }
+
+    inputField.addEventListener('input', (e) => {
+        if (!isPlaying) return;
+        const input = e.target.value;
+        totalCharsTyped = input.length;
+
+        correctChars = 0;
+        for (let i = 0; i < input.length; i++) {
+            if (input[i] === currentText[i]) correctChars++;
+        }
+
+        renderText(input);
+        wpmElement.innerText = calculateWPM();
+        accuracyElement.innerText = calculateAccuracy();
+
+        if (input === currentText) {
+            timeLeft = 0;
+            timerElement.innerText = "0";
+            endGame(false);
+        }
+    });
+
+    startBtn.addEventListener('click', startGame);
+    cancelBtn.addEventListener('click', () => {
+        if (isPlaying) endGame(true);
+    });
+
+    /* ============ KEYBOARD VIRTUAL ============ */
+    function highlightKey(keyValue, isPressed) {
+        keys.forEach(key => {
+            const k = key.dataset.key;
+            if (k && k.toLowerCase() === keyValue.toLowerCase()) {
+                if (isPressed) key.classList.add('active');
+                else key.classList.remove('active');
+            }
+        });
+    }
+
+    document.addEventListener('keydown', (e) => {
+        let key = e.key;
+        if (key === ' ') key = ' ';
+        highlightKey(key, true);
+    });
+
+    document.addEventListener('keyup', (e) => {
+        let key = e.key;
+        highlightKey(key, false);
+    });
+
+    /* ============ INISIALISASI ============ */
+    updateDurationFromLevel();
+    loadRandomText();
+</script>
+
+</body>
+</html>
