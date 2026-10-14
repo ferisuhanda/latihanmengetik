@@ -1,0 +1,2 @@
+# latihanmengetik
+aplikasi
