@@ -47,6 +47,61 @@
 
         h1 { color: var(--accent); margin: 0 0 15px 0; font-size: 1.8em; }
 
+        /* ===== VIEWER ===== */
+        .viewer-panel {
+            background: var(--bg);
+            border-radius: 10px;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: 0.95em;
+        }
+
+        .viewer-panel .viewer-count {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--correct);
+            font-weight: bold;
+        }
+
+        .viewer-panel .viewer-count .dot {
+            width: 10px;
+            height: 10px;
+            background: var(--correct);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+            box-shadow: 0 0 10px var(--correct);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.3); }
+        }
+
+        .viewer-panel .viewer-list {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text);
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .viewer-panel .viewer-list .label {
+            color: #9399b2;
+            font-size: 0.85em;
+        }
+
+        .viewer-panel .viewer-list .names {
+            color: var(--key-special);
+            font-weight: bold;
+        }
+
         .register-box {
             background: var(--bg);
             padding: 15px;
@@ -278,6 +333,8 @@
             .key.space { width: 180px; }
             #text-display { font-size: 1.1em; }
             #notification-area { top: 10px; right: 10px; left: 10px; max-width: none; }
+            .viewer-panel { justify-content: center; text-align: center; }
+            .viewer-panel .viewer-list { justify-content: center; }
         }
     </style>
 </head>
@@ -286,7 +343,19 @@
 <div id="notification-area"></div>
 
 <div class="container">
-    <h1>⌨️ Latihan Mengetik : DQ4</h1>
+    <h1>⌨️ Latihan Mengetik</h1>
+
+    <!-- ===== VIEWER PANEL ===== -->
+    <div class="viewer-panel">
+        <div class="viewer-count">
+            <span class="dot"></span>
+            👥 <span id="viewer-total">0</span> pengunjung online
+        </div>
+        <div class="viewer-list">
+            <span class="label">Sedang melihat:</span>
+            <span class="names" id="viewer-names">-</span>
+        </div>
+    </div>
 
     <div class="register-box" id="register-box">
         <input type="text" id="name-input" placeholder="Masukkan nama Anda..." maxlength="30">
@@ -441,6 +510,47 @@
         }
     }
 
+    /* ============ VIEWER SIMULASI ============ */
+    const NAMA_ONLINE = ["Andi", "Budi", "Citra", "Dewi", "Eka", "Fajar", "Gita", "Hendra", "Indah", "Joko", "Kartika", "Lina", "Maya", "Nanda", "Oki"];
+    let viewerList = [];
+
+    function renderViewer() {
+        document.getElementById('viewer-total').innerText = viewerList.length;
+        document.getElementById('viewer-names').innerText = viewerList.length > 0 ? viewerList.join(", ") : "-";
+    }
+
+    function randomViewer() {
+        return NAMA_ONLINE[Math.floor(Math.random() * NAMA_ONLINE.length)];
+    }
+
+    // Tambah viewer acak secara berkala
+    function addRandomViewer() {
+        const name = randomViewer();
+        if (!viewerList.includes(name) && viewerList.length < 8) {
+            viewerList.push(name);
+            renderViewer();
+            showNotification(`${name} baru saja bergabung melihat situs ini!`, "👤");
+        }
+    }
+
+    // Hapus viewer acak
+    function removeRandomViewer() {
+        if (viewerList.length > 1) {
+            const idx = Math.floor(Math.random() * viewerList.length);
+            const name = viewerList[idx];
+            viewerList.splice(idx, 1);
+            renderViewer();
+        }
+    }
+
+    // Inisialisasi viewer awal (simulasi 3-5 orang online)
+    function initViewers() {
+        const count = 3 + Math.floor(Math.random() * 3); // 3-5 orang
+        const shuffled = [...NAMA_ONLINE].sort(() => 0.5 - Math.random());
+        viewerList = shuffled.slice(0, count);
+        renderViewer();
+    }
+
     /* ============ ELEMEN DOM ============ */
     const timerElement = document.getElementById('timer');
     const wpmElement = document.getElementById('wpm');
@@ -478,12 +588,12 @@
     }
 
     window.addEventListener('load', () => {
+        initViewers();
         setTimeout(() => {
             showNotification("Seseorang baru saja membuka situs ini! 👋", "🌐");
         }, 500);
         setTimeout(() => {
-            const randomUser = ["Andi", "Budi", "Citra", "Dewi", "Eka", "Fajar", "Gita"];
-            const pick = randomUser[Math.floor(Math.random() * randomUser.length)];
+            const pick = randomViewer();
             showNotification(`${pick} sedang online di situs ini!`, "🟢");
         }, 3000);
     });
@@ -502,6 +612,12 @@
         startBtn.disabled = false;
         inputField.placeholder = "Klik 'Mulai Latihan' untuk memulai...";
         showNotification(`Selamat datang, ${userName}! 🎉`, "✅");
+
+        // Tambahkan nama pendaftar ke daftar viewer
+        if (!viewerList.includes(userName) && viewerList.length < 10) {
+            viewerList.push(userName);
+            renderViewer();
+        }
     }
 
     registerBtn.addEventListener('click', registerUser);
@@ -668,6 +784,12 @@
     /* ============ INISIALISASI ============ */
     updateDurationFromLevel();
     loadRandomText();
+
+    // Simulasi viewer bergabung/keluar secara berkala
+    setInterval(() => {
+        if (Math.random() > 0.5) addRandomViewer();
+        else removeRandomViewer();
+    }, 8000);
 </script>
 
 </body>
